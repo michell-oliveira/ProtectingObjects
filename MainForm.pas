@@ -21,6 +21,9 @@ type
     btnSolucao1Falha: TButton;
     btnSolucao2Falha: TButton;
     btnSolucao3Falha: TButton;
+    grpInterface: TGroupBox;
+    btnInterfaceNormal: TButton;
+    btnInterfaceFalha: TButton;
     btnLimpar: TButton;
     procedure FormCreate(ASender: TObject);
     procedure btnErrado1Click(ASender: TObject);
@@ -31,6 +34,8 @@ type
     procedure btnSolucao1FalhaClick(ASender: TObject);
     procedure btnSolucao2FalhaClick(ASender: TObject);
     procedure btnSolucao3FalhaClick(ASender: TObject);
+    procedure btnInterfaceNormalClick(ASender: TObject);
+    procedure btnInterfaceFalhaClick(ASender: TObject);
     procedure btnLimparClick(ASender: TObject);
   private
     procedure Log(const ATexto: string);
@@ -103,6 +108,16 @@ begin
     8: begin
          Log('Sol. 3: A2.Destroy falha - A1.Free nunca executa (mesmo finally). A1 VAZA!');
          Solucao3_ComFalha_Protegido;
+       end;
+    9: begin
+         Log('Interface: sem try-finally - ref count libera automaticamente');
+         SolucaoInterface_Normal;
+         Log('Concluido. Objetos liberados ao sair do escopo.');
+       end;
+    10: begin
+         Log('Interface + excecao: ao sair, LA1 e LA2 liberados automaticamente');
+         SolucaoInterface_ComFalhaNoCreate;
+         Log('(Nao deveria chegar aqui)');
        end;
   end;
 end;
@@ -211,6 +226,32 @@ begin
       Log('  [LEAK] A1 NAO foi destruido! A1.Free nunca executou - estava no mesmo');
       Log('         finally que A2.Free; ao falhar A2.Destroy, o restante do bloco nao roda.');
       Log('  Ao fechar o app, ReportMemoryLeaksOnShutdown mostrara o leak de A1.');
+    end;
+  end;
+  Log('');
+end;
+
+procedure TfrmMain.btnInterfaceNormalClick(ASender: TObject);
+begin
+  try
+    ExecutarExemplo(9);
+  except
+    on LE: Exception do
+      Log('Erro: ' + LE.ClassName + ': ' + LE.Message);
+  end;
+  Log('');
+end;
+
+procedure TfrmMain.btnInterfaceFalhaClick(ASender: TObject);
+begin
+  try
+    ExecutarExemplo(10);
+  except
+    on LE: Exception do
+    begin
+      Log('Erro: ' + LE.ClassName + ': ' + LE.Message);
+      Log('  [INTERFACE] LA1 e LA2 liberados! Ref count ao sair do escopo.');
+      Log('  Nenhum try-finally necessario - interface garante eliminacao.');
     end;
   end;
   Log('');

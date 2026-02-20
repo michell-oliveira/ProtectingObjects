@@ -3,6 +3,7 @@ unit ExemplosTryFinally;
 interface
 
 uses
+  System.Classes,
   System.SysUtils,
   Test;
 
@@ -16,6 +17,10 @@ uses
   procedure Solucao1_ComFalha_Protegido;
   procedure Solucao2_ComFalha_Protegido;
   procedure Solucao3_ComFalha_Protegido;
+
+  { Solucoes com INTERFACE - sem try-finally, ref count garante liberacao }
+  procedure SolucaoInterface_Normal;
+  procedure SolucaoInterface_ComFalhaNoCreate;
 
 implementation
 
@@ -217,6 +222,35 @@ begin
     LA2.Free;   // Levanta - LA1.Free NUNCA executa! LA1 vaza
     LA1.Free;
   end;
+end;
+
+{ ============================================================================
+  SOLUCAO COM INTERFACE - sem controle manual (try-finally)
+  Reference counting libera automaticamente ao sair do escopo da variavel.
+  Funciona mesmo com excecoes - variaveis locais sao limpas ao sair da procedure.
+  ============================================================================ }
+procedure SolucaoInterface_Normal;
+var
+  LA1, LA2: ITest;
+begin
+  LA1 := TTestInterface.New('A1');
+  LA2 := TTestInterface.New('A2');
+  LA1.DoSomething;
+  LA2.DoSomethingWith(LA1);
+  { Sem try-finally! Ao sair, LA1 e LA2 sao liberados automaticamente }
+end;
+
+procedure SolucaoInterface_ComFalhaNoCreate;
+var
+  LA1, LA2: ITest;
+begin
+  LA1 := TTestInterface.New('A1');
+  LA2 := TTestInterface.New('A2');
+  LA1.DoSomething;
+  LA2.DoSomethingWith(LA1);
+  { Simula falha apos uso - raise sem criar objeto em constructor que vazaria }
+  raise EInvalidOperation.Create('Simulando falha apos uso dos objetos');
+  { Ao sair (por excecao): LA1 e LA2 sao liberados - interfaces saem do escopo }
 end;
 
 end.

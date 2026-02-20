@@ -9,7 +9,7 @@ https://blogs.embarcadero.com/try-finally-blocks-for-protecting-multiple-resourc
 
 - **ProtectingTwoObjects.dpr** – Programa principal
 - **MainForm.pas/dfm** – Form principal com interface
-- **TTest.pas** – Classe `TTest` usada nos exemplos
+- **Test.pas** – Classes `TTest` e `TTestInterface` (com interface `ITest`)
 - **ExemplosTryFinally.pas** – Implementação dos exemplos
 
 ## Casos Errados (How NOT to Write the Code)
@@ -54,6 +54,13 @@ end;
 - Padrão mais balanceado e legível
 - Uniforme para vários recursos
 
+## Solução com Interface (ITest)
+
+Uso de interfaces com reference counting – **sem try-finally necessário**:
+- Objetos liberados automaticamente ao sair do escopo da variável
+- Mesmo com exceção em `Create`, objetos já alocados são liberados
+- Garante eliminação sem controle manual
+
 ## Como Executar
 
 1. Abra `ProtectingTwoObjects.dproj` no RAD Studio/Delphi
@@ -62,3 +69,4 @@ end;
    - **Casos Errados**: Demonstram os bugs quando A2.Create falha
    - **Soluções Corretas**: Padrões corretos sem falha
    - **Soluções com Falha**: Demonstram que os recursos são liberados corretamente
+   - **Interface**: Demonstram que interfaces eliminam a necessidade de try-finally

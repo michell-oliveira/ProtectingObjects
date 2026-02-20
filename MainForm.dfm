@@ -18,7 +18,7 @@ object frmMain: TfrmMain
     Left = 0
     Top = 0
     Width = 520
-    Height = 185
+    Height = 249
     Align = alTop
     TabOrder = 0
     object grpErrados: TGroupBox
@@ -117,21 +117,47 @@ object frmMain: TfrmMain
         OnClick = btnSolucao3FalhaClick
       end
     end
+    object grpInterface: TGroupBox
+      Left = 8
+      Top = 128
+      Width = 250
+      Height = 84
+      Caption = ' Interface (ref count) '
+      TabOrder = 3
+      object btnInterfaceNormal: TButton
+        Left = 12
+        Top = 24
+        Width = 226
+        Height = 25
+        Caption = '9. Interface - sem try-finally'
+        TabOrder = 0
+        OnClick = btnInterfaceNormalClick
+      end
+      object btnInterfaceFalha: TButton
+        Left = 12
+        Top = 48
+        Width = 226
+        Height = 25
+        Caption = '10. Interface + excecao (ambos liberados)'
+        TabOrder = 1
+        OnClick = btnInterfaceFalhaClick
+      end
+    end
     object btnLimpar: TButton
       Left = 8
-      Top = 150
+      Top = 218
       Width = 75
       Height = 25
       Caption = 'Limpar'
-      TabOrder = 3
+      TabOrder = 4
       OnClick = btnLimparClick
     end
   end
   object mmoLog: TMemo
     Left = 0
-    Top = 185
+    Top = 249
     Width = 520
-    Height = 235
+    Height = 171
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -143,5 +169,7 @@ object frmMain: TfrmMain
     ScrollBars = ssBoth
     TabOrder = 1
     WordWrap = False
+    ExplicitTop = 185
+    ExplicitHeight = 235
   end
 end
